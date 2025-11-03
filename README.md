@@ -46,4 +46,42 @@ Dự án được xây dựng dưới dạng package ROS2 và hướng tới ch�
 ---
 
 ## 🗂️ Cấu trúc chính của repository
+rclpy/
+car/
+bramy/
+camera/
+astra_camera.py # wrapper OpenNI camera (depth + color)
+camera_publisher.py # node publish color/depth topic
+get_control.py # node tương tác CAN -> publish control
+tracking.py # node nhận ảnh, phát hiện, hiển thị
+PostProcess.py # hậu xử lý + OCSort + onnx runtime
+ocsort/ # implementation OCSort (tracker)
+launch/bramy.launch.py # launch file cho 4 node chính
+package.xml, setup.py, ... # ROS2 package metadata
+README.md
+LICENSE
+
+
+---
+
+## 🧩 Cách build & chạy (trên Raspberry Pi 5)
+
+> Giả sử bạn đã cài ROS2 (jazzy hoặc release tương ứng), `colcon`, và thiết lập workspace.
+
+### 1️⃣ Build project
+
+```bash
+cd ~/ros2_ws
+colcon build
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+# Test bằng vcan (no hardware)
+sudo modprobe vcan
+sudo ip link add dev vcan0 type vcan
+sudo ip link set up vcan0
+
+# Nếu dùng USB-CAN hoặc MCP2515 thật
+sudo ip link set can0 up type can bitrate 500000
+
 
